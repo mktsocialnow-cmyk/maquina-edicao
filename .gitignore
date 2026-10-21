@@ -1,0 +1,7 @@
+node_modules/
+models/
+entrada/
+saida/
+out/
+*.mp4
+*.mov
