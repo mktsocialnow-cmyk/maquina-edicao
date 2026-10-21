@@ -9,7 +9,10 @@ if ! ldconfig -p | grep -q libEGL.so.1; then
 fi
 
 npm install --no-fund --no-audit
-pip install -q mediapipe openai-whisper
+pip install -q mediapipe
+# PyTorch só de CPU (bem menor que a versão com GPU) e o Whisper para transcrição
+pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+pip install -q openai-whisper
 
 # Modelos de visão (rosto, mão, recorte da pessoa)
 mkdir -p models
