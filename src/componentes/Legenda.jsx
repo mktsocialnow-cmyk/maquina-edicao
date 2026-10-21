@@ -8,8 +8,17 @@ export const Legenda = ({palavras, porBloco = 4, base = 1380}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const agora = f / fps;
+  // Quebra em blocos de até `porBloco` palavras, sem misturar frases.
   const blocos = [];
-  for (let i = 0; i < palavras.length; i += porBloco) blocos.push(palavras.slice(i, i + porBloco));
+  let atual = [];
+  for (const p of palavras) {
+    atual.push(p);
+    if (atual.length === porBloco || /[.?!]$/.test(p.texto)) {
+      blocos.push(atual);
+      atual = [];
+    }
+  }
+  if (atual.length) blocos.push(atual);
   const bloco = blocos.find((b) => agora >= b[0].inicio && agora < b[b.length - 1].fim + 0.15);
   if (!bloco) return null;
   return (
