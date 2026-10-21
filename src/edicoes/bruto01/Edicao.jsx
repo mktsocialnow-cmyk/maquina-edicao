@@ -9,12 +9,12 @@ import rastreio from './rastreio.json';
 
 export const QUADROS_FALA = rastreio.length;
 const FIM_PERGUNTA = 6.75; // segundos: fim de "...você está recebendo?"
-const ESCALA = 0.84; // tamanho da pessoa na tela
+const DESCIDA = 190; // px: desce a pessoa para abrir espaço para o título acima da cabeça
 const CHAVES = ['calibrada', 'pergunta'];
 const palavras = palavrasBrutas.map((p) => ({...p, chave: CHAVES.includes(p.texto)}));
 
-// Converte um ponto do vídeo original para a tela, com a pessoa reduzida a partir da base.
-const naTela = (p) => ({x: 540 + (p.x - 540) * ESCALA, y: 1920 - (1920 - p.y) * ESCALA});
+// Converte um ponto do vídeo original para a tela, com a pessoa deslocada para baixo.
+const naTela = (p) => ({x: p.x, y: p.y + DESCIDA});
 
 // Posição da mão suavizada (média de 5 quadros) para a linha não tremer.
 const maoEm = (f) => {
@@ -49,9 +49,8 @@ const Cena = () => {
         MENTE?
         <span style={{display: 'inline-block', width: 32, height: 32, borderRadius: 16, background: cor.sinal, marginLeft: 10, transform: `scale(${titulo})`}} />
       </div>
-      {/* Pessoa recortada, um pouco menor para abrir espaço acima da cabeça.
-          As laterais esmaecem para a borda do moletom não parecer um corte reto. */}
-      <AbsoluteFill style={{transform: `scale(${ESCALA * zoom})`, transformOrigin: '50% 100%', WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%)'}}>
+      {/* Pessoa recortada, deslocada para baixo (sem reduzir, para as laterais continuarem inteiras) */}
+      <AbsoluteFill style={{transform: `translateY(${DESCIDA}px) scale(${zoom})`, transformOrigin: '50% 30%'}}>
         <Img src={staticFile(`pessoa/${String(quadro).padStart(4, '0')}.png`)} style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}} />
       </AbsoluteFill>
 
@@ -66,7 +65,7 @@ const Cena = () => {
         PERGUNTA · 01
       </div>
 
-      <Legenda palavras={palavras} porBloco={4} base={1180} />
+      <Legenda palavras={palavras} porBloco={4} base={1360} />
     </AbsoluteFill>
   );
 };
